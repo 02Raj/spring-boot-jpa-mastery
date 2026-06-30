@@ -128,4 +128,57 @@ It returns an empty `Sort` instance, meaning the data will be returned in whatev
 When writing complex `GROUP BY` aggregations, return the results as a `List` or use `Slice` instead of `Page`, because generating a generic `countQuery` for grouped data is often inaccurate and highly inefficient.
 
 ---
+
+## 🛠️ Scenario-Based Questions
+
+These are the “real-world” questions asked by service companies and product companies alike.
+
+| # | Scenario | Difficulty | Short Answer |
+|---|---|---|---|
+| 1 | A frontend sends page=1, but your API uses zero-based pages. What do you do? | Medium | Convert input or configure one-based pages. |
+| 2 | The business wants total records and total pages. What return type do you use? | Medium | `Page<T>` |
+| 3 | The business only wants “next page exists”. What do you use? | Medium | `Slice<T>` |
+| 4 | A user wants results sorted by price desc, name asc. | Medium | Use multi-column Sort. |
+| 5 | API response is slow on page 500. Why? | Hard | Large offset scan cost. |
+| 6 | Results appear duplicated between page 2 and page 3. Why? | Hard | Non-deterministic sorting or data changes. |
+| 7 | User filters by category and sorts by rating. How implement? | Hard | Use specification/criteria + pageable. |
+| 8 | Pagination fails with a fetch join query. Why? | Hard | Join explosion and incorrect page slicing. |
+| 9 | Product wants a custom response format, not Spring Page. | Medium | Wrap page in a DTO. |
+| 10 | Need pagination API for millions of rows. | Hard | Consider cursor pagination or `Slice`. |
+| 11 | Mobile app wants page size capped at 50. | Medium | Set max page size. |
+| 12 | Need sorting on nested address.city. | Medium | Sort by nested property path. |
+| 13 | Need default sort by createdAt desc, then id desc. | Medium | Use deterministic multi-sort. |
+| 14 | Need to avoid count query in a list screen. | Medium | Return `Slice<T>`. |
+| 15 | Need admin export with all records. | Hard | Don’t paginate blindly; stream or batch. |
+
+---
+
+## 💻 Coding Tasks
+
+These are practical tasks interviewers may assign verbally or in coding rounds.
+
+| # | Coding task | Difficulty | Short Answer |
+|---|---|---|---|
+| 1 | Create a pagination API for products. | Easy | Accept `Pageable` in controller. |
+| 2 | Create a sorting API by name. | Easy | Accept `Sort` or use `findAll(Sort)`. |
+| 3 | Implement pagination + sorting. | Medium | Use `PageRequest.of(page, size, sort)`. |
+| 4 | Implement multi-field sorting. | Medium | Chain sorts with `.and(...)`. |
+| 5 | Implement pagination + filtering + sorting. | Hard | Use Specification or custom query. |
+| 6 | Create PageResponse DTO. | Medium | Map `Page<T>` into custom response. |
+| 7 | Implement Page vs Slice. | Medium | Return both from repository methods. |
+| 8 | Sort by nested object field. | Medium | Use nested property path. |
+| 9 | Use `@RequestParam` for page/size/sort. | Easy | Bind explicitly and build `PageRequest`. |
+| 10 | Create a repository method with Pageable. | Easy | Add `Pageable` parameter. |
+| 11 | Implement repository method using `@Query` and Pageable. | Hard | Add countQuery if needed. |
+| 12 | Add max page size validation. | Medium | Check and reject oversized values. |
+| 13 | Return DTOs from pageable endpoints. | Medium | Use `Page.map(...)`. |
+| 14 | Implement stable default sorting. | Medium | Sort by createdAt and id. |
+| 15 | Write test cases for pageable endpoint. | Hard | Assert content and metadata. |
+| 16 | Implement `@PageableDefault`. | Easy | Annotate controller param. |
+| 17 | Handle invalid sort fields. | Medium | Validate against whitelist. |
+| 18 | Implement repository with OrderBy. | Easy | Use method-name query derivation. |
+| 19 | Support one-based page numbers. | Medium | Convert in controller. |
+| 20 | Add SQL logging and verify count query. | Hard | Check generated SQL in logs. |
+
+---
 *Created dynamically for quick interview preparation and revision.*
