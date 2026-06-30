@@ -30,5 +30,6 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Query("select e.title, e.price from ProductEntity e where e.title=:title and e.price=:price")
     Optional<ProductEntity> findByTitleAndPrice(String title, BigDecimal price);
 
+    List<ProductEntity> findByQuantityGreaterThanOrPriceLessThan(int quantity, int price, Pageable pageable);
 
 }

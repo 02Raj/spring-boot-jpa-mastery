@@ -30,11 +30,17 @@ public class ProductController {
     public List<ProductEntity> getAllProducts(
             @RequestParam(defaultValue = "") String title,
             @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
             @RequestParam(defaultValue = "0") Integer pageNumber) {
+
+            Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+            Pageable pageable = PageRequest.of(pageNumber,PAGE_SIZE,direction,sortBy);
+
 
             return productRepository.findByTitleContainingIgnoreCase(
                     title,
-                    PageRequest.of(pageNumber, PAGE_SIZE, Sort.by(sortBy))
+                    pageable
             );
 
 //
@@ -51,6 +57,21 @@ public class ProductController {
 //                Sort.by(sortBy));
 //
 //        return productRepository.findAll(pageable).getContent();
+
+    }
+
+
+    @GetMapping
+    public List<ProductEntity> getProductsBasedOnPriceOrQuantity(
+
+            @RequestParam int qunatity,
+            @RequestParam int price,
+            @RequestParam(defaultValue = "0") Integer pageNumber
+    ){
+
+        Pageable pageable = PageRequest.of(pageNumber,PAGE_SIZE);
+
+        return productRepository.findByQuantityGreaterThanOrPriceLessThan(qunatity,price,pageable);
 
     }
 
